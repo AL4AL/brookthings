@@ -41,6 +41,15 @@ type WSServer struct {
 	WithoutBrook bool
 }
 
+// func randomPath() string {
+//     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+//     path := make([]byte, 8)
+//     for i := range path {
+//         path[i] = chars[rand.Intn(len(chars))]
+//     }
+//     return "/" + string(path)
+// }
+
 func NewWSServer(addr, password, domain, path string, tcpTimeout, udpTimeout int, withoutbrook bool) (*WSServer, error) {
 	if err := limits.Raise(); err != nil {
 		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
@@ -144,6 +153,9 @@ var upgrader = websocket.Upgrader{
 }
 
 func (s *WSServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Server", "nginx")
+	w.Header().Set("Content-Type", "text/html")
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return

@@ -26,9 +26,18 @@ import (
 	"io"
 	"net"
 	"time"
-
+	mrand "math/rand"
 	x1 "github.com/txthinking/x"
 )
+
+func randomPath() string {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    path := make([]byte, 8)
+    for i := range path {
+        path[i] = chars[mrand.Intn(len(chars))]
+    }
+    return "/" + string(path)
+}
 
 func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout int) (net.Conn, error) {
 	var c net.Conn
@@ -82,6 +91,11 @@ func WebSocketDial(src, dst, addr, host, path string, tc *tls.Config, timeout in
 	b = append(b, []byte("Connection: Upgrade\r\n")...)
 	b = append(b, []byte(fmt.Sprintf("Sec-WebSocket-Key: %s\r\n", k))...)
 	b = append(b, []byte("Sec-WebSocket-Version: 13\r\n\r\n")...)
+	b = append(b, []byte("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\r\n")...)
+	b = append(b, []byte("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\n")...)
+	b = append(b, []byte("Accept-Encoding: gzip, deflate, br\r\n")...)
+	b = append(b, []byte("Accept-Language: en-US,en;q=0.9\r\n")...)
+
 	if _, err := c.Write(b); err != nil {
 		c.Close()
 		return nil, err

@@ -37,6 +37,15 @@ type WSClient struct {
 	PacketConnFactory *PacketConnFactory
 }
 
+// func randomPath() string {
+//     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+//     path := make([]byte, 8)
+//     for i := range path {
+//         path[i] = chars[rand.Intn(len(chars))]
+//     }
+//     return "/" + string(path)
+// }
+
 func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int, withoutbrook bool) (*WSClient, error) {
 	if err := limits.Raise(); err != nil {
 		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
@@ -53,6 +62,7 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int, 
 	if path == "" {
 		path = "/ws"
 	}
+
 	p := []byte(password)
 	if withoutbrook {
 		p, err = crypto1.SHA256Bytes([]byte(password))
