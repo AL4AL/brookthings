@@ -1,4 +1,4 @@
-module github.com/txthinking/brook
+module github.com/AL4AL/brookthings
 
 go 1.19
 
